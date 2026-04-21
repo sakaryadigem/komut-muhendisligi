@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meyve Sebze Hafıza Oyunu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__content">
+        <p class="eyebrow">Hafiza Egzersizi</p>
+        <h1>Meyve ve Sebze Kartlarini Eslestir</h1>
+        <p class="hero__text">
+          Kartlari cevir, ayni meyve veya sebzeyi bul ve puanini artir.
+          Renkli dunya cocuklar icin hazirlandi.
+        </p>
+      </div>
+      <div class="hero__badge">🍎🥕🍓🥦</div>
+    </header>
+
+    <main class="game-layout">
+      <section class="control-panel" aria-label="Oyun kontrolleri">
+        <div class="control-panel__top">
+          <div>
+            <h2>Oyun Ayarlari</h2>
+            <p>Seviyeni sec ve kartlari acmaya basla.</p>
+          </div>
+          <button class="how-to-btn" id="openHelpButton" type="button">Nasil Oynanir?</button>
+        </div>
+
+        <div class="controls">
+          <label class="size-picker" for="boardSize">Kart Alani</label>
+          <select id="boardSize" aria-label="Oyun alani boyutu">
+            <option value="8">8 x 8</option>
+            <option value="10">10 x 10</option>
+            <option value="12">12 x 12</option>
+          </select>
+
+          <button class="primary-btn" id="restartButton" type="button">Yeni Oyun</button>
+        </div>
+
+        <div class="stats" aria-live="polite">
+          <article class="stat-card">
+            <span class="stat-card__label">Hamle</span>
+            <strong id="moveCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-card__label">Eslesen Cift</span>
+            <strong id="matchCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-card__label">Durum</span>
+            <strong id="statusText">Hazir</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="board-panel">
+        <div id="gameBoard" class="game-board" aria-label="Hafiza oyunu kartlari"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal is-visible" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal__backdrop" id="closeHelpBackdrop"></div>
+    <div class="modal__card">
+      <div class="modal__header">
+        <h2 id="helpTitle">Oyuna Hos Geldin</h2>
+        <button id="closeHelpButton" class="modal__close" type="button" aria-label="Aciklamayi kapat">X</button>
+      </div>
+      <div class="modal__body">
+        <p>Bu oyun hafizani guclendirmek icin hazirlandi.</p>
+        <ul>
+          <li>Kapali kartlardan iki tane sec.</li>
+          <li>Ayni meyve veya sebzeyi bulursan kartlar acik kalir ve zil sesi calar.</li>
+          <li>Farkli kartlar acarsan hata sesi duyulur ve kartlar tekrar kapanir.</li>
+          <li>8 x 8, 10 x 10 veya 12 x 12 alan secerek zorlugu degistirebilirsin.</li>
+        </ul>
+        <button class="primary-btn modal__action" id="startGameButton" type="button">Oyuna Basla</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
