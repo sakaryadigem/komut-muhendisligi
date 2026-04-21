@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura — Ruh Halin Değişti. Kokusu Da Değişsin.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F5F0EA;
+    --sage: #8BAF9A;
+    --mist: #B8D4C8;
+    --deep: #1C2B26;
+    --lavender: #C4B8D4;
+    --warm: #E8DDD0;
+    --gold: #C8A96E;
+    --text: #2A3530;
+    --light-text: #6B7E78;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--sage);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.2s ease, opacity 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--sage);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.12s ease;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 60px;
+    z-index: 100;
+    mix-blend-mode: multiply;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; letter-spacing: 0.25em;
+    color: var(--deep); text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 40px; }
+  .nav-links a {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--light-text); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--deep); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 80px 80px 80px;
+    position: relative; z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 40px; height: 1px; background: var(--sage);
+  }
+
+  .hero-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 5vw, 76px);
+    font-weight: 300; line-height: 1.1;
+    color: var(--deep); margin-bottom: 28px;
+  }
+  .hero-headline em { font-style: italic; color: var(--sage); }
+
+  .hero-sub {
+    font-size: 15px; line-height: 1.8; font-weight: 300;
+    color: var(--light-text); max-width: 380px; margin-bottom: 56px;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 16px;
+    background: var(--deep); color: var(--cream);
+    padding: 18px 40px; font-size: 11px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.4s ease;
+    position: relative; overflow: hidden;
+  }
+  .hero-cta::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--sage); transform: translateX(-101%);
+    transition: transform 0.4s ease;
+  }
+  .hero-cta:hover::after { transform: translateX(0); }
+  .hero-cta span { position: relative; z-index: 1; }
+  .hero-cta svg { position: relative; z-index: 1; transition: transform 0.3s; }
+  .hero-cta:hover svg { transform: translateX(6px); }
+
+  .hero-right {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #D4E8DF 0%, #EAE0D5 60%, #C8D8E4 100%);
+  }
+
+  /* Animated orbs */
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(60px); opacity: 0.5;
+    animation: float 8s ease-in-out infinite;
+  }
+  .orb-1 { width: 300px; height: 300px; background: #9DC4B0; top: 10%; left: 10%; animation-delay: 0s; }
+  .orb-2 { width: 200px; height: 200px; background: #B8A4CC; top: 50%; right: 5%; animation-delay: -3s; }
+  .orb-3 { width: 250px; height: 250px; background: #A8C4D8; bottom: 10%; left: 30%; animation-delay: -5s; }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(20px, -30px) scale(1.05); }
+    66% { transform: translate(-15px, 15px) scale(0.95); }
+  }
+
+  /* Product visualization */
+  .product-visual {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 260px; height: 260px;
+    z-index: 2;
+  }
+
+  .bracelet-ring {
+    width: 200px; height: 200px;
+    border: 3px solid rgba(255,255,255,0.8);
+    border-radius: 50%;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 40px rgba(139, 175, 154, 0.3), inset 0 0 40px rgba(255,255,255,0.1);
+    animation: pulse-ring 3s ease-in-out infinite;
+  }
+
+  .bracelet-core {
+    width: 120px; height: 36px;
+    background: linear-gradient(135deg, #F0EDE8, #DDDAD5);
+    border-radius: 20px;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bracelet-sensor {
+    width: 18px; height: 18px;
+    background: radial-gradient(circle, #8BAF9A, #5A8070);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(139,175,154,0.6);
+    animation: sensor-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 40px rgba(139,175,154,0.3), inset 0 0 40px rgba(255,255,255,0.1); transform: translate(-50%,-50%) scale(1); }
+    50% { box-shadow: 0 0 70px rgba(139,175,154,0.5), inset 0 0 40px rgba(255,255,255,0.15); transform: translate(-50%,-50%) scale(1.03); }
+  }
+  @keyframes sensor-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(139,175,154,0.6); }
+    50% { box-shadow: 0 0 24px rgba(139,175,154,1); }
+  }
+
+  /* Floating scent particles */
+  .particles { position: absolute; inset: 0; pointer-events: none; }
+  .particle {
+    position: absolute; width: 6px; height: 6px;
+    border-radius: 50%; opacity: 0;
+    animation: rise 6s ease-in-out infinite;
+  }
+  .p1 { background: rgba(139,175,154,0.7); left: 48%; bottom: 55%; animation-delay: 0s; }
+  .p2 { background: rgba(184,164,204,0.6); left: 52%; bottom: 55%; animation-delay: -2s; width: 4px; height: 4px; }
+  .p3 { background: rgba(139,175,154,0.5); left: 44%; bottom: 55%; animation-delay: -4s; width: 5px; height: 5px; }
+  .p4 { background: rgba(168,196,216,0.7); left: 56%; bottom: 55%; animation-delay: -1s; }
+  .p5 { background: rgba(139,175,154,0.4); left: 50%; bottom: 55%; animation-delay: -3s; width: 3px; height: 3px; }
+
+  @keyframes rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(-120px) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+  .p1 { --drift: -25px; }
+  .p2 { --drift: 30px; }
+  .p3 { --drift: -10px; }
+  .p4 { --drift: 15px; }
+  .p5 { --drift: -35px; }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 80px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--light-text); animation: fade-in 1s ease 1s both;
+  }
+  .scroll-line {
+    width: 40px; height: 1px; background: var(--light-text);
+    animation: extend 2s ease-in-out infinite;
+  }
+  @keyframes extend {
+    0%, 100% { width: 40px; opacity: 1; }
+    50% { width: 60px; opacity: 0.5; }
+  }
+
+  /* SECTIONS */
+  section { padding: 120px 80px; }
+
+  /* HOW IT WORKS */
+  .how {
+    background: var(--deep);
+    color: var(--cream);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+
+  .section-label {
+    font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-label::before { content: ''; width: 40px; height: 1px; background: var(--sage); }
+
+  .how h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 3.5vw, 56px); font-weight: 300; line-height: 1.2;
+    margin-bottom: 32px;
+  }
+  .how h2 em { font-style: italic; color: var(--mist); }
+
+  .how p {
+    font-size: 15px; line-height: 1.9; font-weight: 300;
+    color: rgba(245,240,234,0.7); margin-bottom: 20px;
+  }
+
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 32px; align-items: flex-start;
+    padding: 32px 0; border-bottom: 1px solid rgba(245,240,234,0.1);
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  .step.visible { opacity: 1; transform: translateY(0); }
+
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; color: rgba(139,175,154,0.3);
+    line-height: 1; min-width: 60px;
+  }
+  .step-content h4 {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--mist); margin-bottom: 8px; font-weight: 500;
+  }
+  .step-content p {
+    font-size: 14px; color: rgba(245,240,234,0.6);
+    margin: 0; line-height: 1.7;
+  }
+
+  /* BODY TEXT SECTION */
+  .body-section {
+    background: var(--warm);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+  }
+
+  .body-section-left { padding-top: 8px; }
+
+  .body-section-left h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 3vw, 52px); font-weight: 300;
+    line-height: 1.15; color: var(--deep); position: sticky; top: 140px;
+  }
+  .body-section-left h2 em { font-style: italic; display: block; color: var(--sage); }
+
+  .body-paragraphs { display: flex; flex-direction: column; gap: 48px; }
+
+  .body-para {
+    opacity: 0; transform: translateY(24px);
+    transition: all 0.7s ease;
+  }
+  .body-para.visible { opacity: 1; transform: translateY(0); }
+
+  .body-para-num {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 16px;
+  }
+  .body-para h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 400; color: var(--deep);
+    margin-bottom: 16px; line-height: 1.3;
+  }
+  .body-para p {
+    font-size: 15px; line-height: 1.9; color: var(--light-text);
+    font-weight: 300;
+  }
+
+  /* SCENT PILLS */
+  .scents-section {
+    background: var(--cream);
+    text-align: center;
+    padding: 100px 80px;
+  }
+
+  .scents-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 60px); font-weight: 300;
+    margin-bottom: 16px; color: var(--deep);
+  }
+  .scents-section .sub { color: var(--light-text); margin-bottom: 64px; font-size: 15px; font-weight: 300; }
+
+  .scents-grid {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    justify-content: center; max-width: 800px; margin: 0 auto 80px;
+  }
+
+  .scent-pill {
+    padding: 14px 28px; border-radius: 50px;
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 400; cursor: none;
+    transition: all 0.35s ease; border: 1px solid transparent;
+  }
+  .scent-pill:hover { transform: translateY(-3px); }
+  .pill-calm { background: #E8F0EC; color: #4A7A62; border-color: #C4DDD0; }
+  .pill-calm:hover { background: #8BAF9A; color: white; }
+  .pill-energy { background: #EEF5EC; color: #5A7A42; border-color: #CCDEC8; }
+  .pill-energy:hover { background: #7AAF6A; color: white; }
+  .pill-focus { background: #EBF0F5; color: #4A6280; border-color: #C4D0E0; }
+  .pill-focus:hover { background: #6A82A0; color: white; }
+  .pill-joy { background: #F5EEE8; color: #8A6040; border-color: #E0CAB8; }
+  .pill-joy:hover { background: #C8905A; color: white; }
+  .pill-balance { background: #F0EBF5; color: #6A5080; border-color: #D8C8E8; }
+  .pill-balance:hover { background: #9A7AB0; color: white; }
+  .pill-sleep { background: #EAE8F2; color: #504878; border-color: #CAC0E8; }
+  .pill-sleep:hover { background: #7868A8; color: white; }
+
+  /* SPECS */
+  .specs {
+    background: var(--deep); color: var(--cream);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; padding: 0;
+  }
+  .spec-item {
+    padding: 64px 48px; border-right: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.3s;
+  }
+  .spec-item:last-child { border-right: none; }
+  .spec-item:hover { background: rgba(139,175,154,0.1); }
+  .spec-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px; font-weight: 300; color: var(--sage);
+    line-height: 1; margin-bottom: 12px;
+  }
+  .spec-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(245,240,234,0.5); margin-bottom: 12px; }
+  .spec-desc { font-size: 13px; color: rgba(245,240,234,0.6); line-height: 1.6; font-weight: 300; }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: linear-gradient(135deg, #8BAF9A 0%, #5A8070 100%);
+    text-align: center; padding: 120px 80px;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: 'AURA'; position: absolute;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 300px; font-weight: 300; color: rgba(255,255,255,0.05);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    white-space: nowrap; pointer-events: none; letter-spacing: 0.1em;
+  }
+  .cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 5vw, 72px); font-weight: 300;
+    color: white; margin-bottom: 16px; position: relative;
+  }
+  .cta-section p {
+    color: rgba(255,255,255,0.8); font-size: 16px; font-weight: 300;
+    margin-bottom: 48px; position: relative;
+  }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 16px;
+    background: white; color: var(--deep);
+    padding: 20px 56px; font-size: 11px;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    text-decoration: none; font-weight: 500;
+    transition: all 0.3s ease; position: relative;
+  }
+  .cta-btn:hover { background: var(--deep); color: white; transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.2); }
+
+  .price-note {
+    margin-top: 28px; font-size: 12px;
+    color: rgba(255,255,255,0.6); position: relative;
+    letter-spacing: 0.1em;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--deep); padding: 48px 80px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; letter-spacing: 0.3em;
+    color: var(--cream); text-transform: uppercase; font-weight: 300;
+  }
+  footer p { font-size: 11px; color: rgba(245,240,234,0.3); letter-spacing: 0.1em; }
+
+  @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hero-left > * { animation: fade-in 0.8s ease both; }
+  .hero-eyebrow { animation-delay: 0.2s; }
+  .hero-headline { animation-delay: 0.4s; }
+  .hero-sub { animation-delay: 0.6s; }
+  .hero-cta { animation-delay: 0.8s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 24px 32px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 50vh; }
+    .hero-left { padding: 120px 32px 60px; }
+    section { padding: 80px 32px; }
+    .how, .body-section { grid-template-columns: 1fr; gap: 48px; }
+    .specs { grid-template-columns: 1fr 1fr; }
+    .spec-item { border-bottom: 1px solid rgba(255,255,255,0.08); }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">Aura</div>
+  <div class="nav-links">
+    <a href="#nasil">Nasıl Çalışır</a>
+    <a href="#teknoloji">Teknoloji</a>
+    <a href="#kokular">Kokular</a>
+    <a href="#siparis">Sipariş</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Giyilebilir Wellness Teknolojisi</div>
+    <h1 class="hero-headline">
+      Ruh Halin Değişti.<br><em>Kokusu Da</em><br>Değişsin.
+    </h1>
+    <p class="hero-sub">
+      Aura, bedenini dinler, anı hisseder ve seni tam ihtiyacın olan yere getirir — tek bir nefeste.
+    </p>
+    <a href="#siparis" class="hero-cta">
+      <span>Ön Sipariş Ver</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="hero-right">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="product-visual">
+      <div class="bracelet-ring"></div>
+      <div class="bracelet-core">
+        <div class="bracelet-sensor"></div>
+      </div>
+    </div>
+    <div class="particles">
+      <div class="particle p1"></div>
+      <div class="particle p2"></div>
+      <div class="particle p3"></div>
+      <div class="particle p4"></div>
+      <div class="particle p5"></div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Keşfet
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="nasil">
+  <div>
+    <div class="section-label">Nasıl Çalışır</div>
+    <h2>Sensörden <em>kokuya,</em><br>saniyeler içinde.</h2>
+    <p>
+      Aura'nın biyometrik motor sistemi, cilt altındaki sinyalleri sürekli analiz eder ve ruh halini gerçek zamanlı olarak yorumlar.
+    </p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h4>Hisset</h4>
+        <p>Cilt iletkenliği, kalp ritmi değişkenliği ve vücut ısısı sensörleri seni sürekli izler.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h4>Analiz Et</h4>
+        <p>Yapay zeka tabanlı AuraMind™ motoru ruh halini 12 farklı boyutta değerlendirir.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h4>Yanıt Ver</h4>
+        <p>Doğru koku bileşimi, 4 saniye içinde mikro-difüzörden bilek bölgesine iletilir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BODY TEXT -->
+<section class="body-section" id="teknoloji">
+  <div class="body-section-left">
+    <div class="section-label">Derinlemesine</div>
+    <h2>İyi hissetmek<br><em>artık şansa<br>bırakılmıyor.</em></h2>
+  </div>
+  <div class="body-paragraphs">
+    <div class="body-para">
+      <div class="body-para-num">— 01</div>
+      <h3>Teknoloji Artık Seni Hissediyor</h3>
+      <p>Aura'nın biyometrik sensörleri cilt iletkenliğini, kalp ritmi değişkenliğini ve vücut ısını gerçek zamanlı olarak analiz eder. Stres mi hissediyorsun? Aura bunu sen fark etmeden önce fark eder. Çünkü beden her şeyi bilir; Aura sadece dinlemesini biliyor.</p>
+    </div>
+    <div class="body-para">
+      <div class="body-para-num">— 02</div>
+      <h3>Her An, Sana Özel Bir Koku</h3>
+      <p>Gergin bir toplantı sonrasında sakinleştirici lavanta, sabahın ilk yorgunluğunda zihni uyandıran nane-ökaliptüs karışımı. Aura'nın kişiselleştirilmiş aromaterapi algoritması, 12 farklı koku bileşimini ruh haline göre anlık olarak dozlar ve salınımı bilek bölgesine yönlendirir.</p>
+    </div>
+    <div class="body-para">
+      <div class="body-para-num">— 03</div>
+      <h3>Giyilebilir Teknoloji, Kadim Bilgelik</h3>
+      <p>Giyilebilir teknoloji yüzyıllardır bilinen bir bilgelikle buluşuyor: Koku, duyguların en kısa yolu. Aura bu yolu senin için otomatikleştiriyor. Çünkü zihinsel denge, anı yakalamayı bilenler için bir lüks değil — tasarlanmış bir deneyimdir.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENTS -->
+<section class="scents-section" id="kokular">
+  <div class="section-label" style="justify-content:center;">Koku Koleksiyonu</div>
+  <h2 class="section-label" style="font-family:'Cormorant Garamond',serif; font-size:clamp(36px,4vw,60px); font-weight:300; color:var(--deep); letter-spacing:normal; text-transform:none; display:block; margin-bottom:12px;">12 Ruh Hali, 12 Koku</h2>
+  <p class="sub">Aura'nın kütüphanesinden her anına özel bir kompozisyon</p>
+  <div class="scents-grid">
+    <div class="scent-pill pill-calm">🌿 Lavanta · Sakinlik</div>
+    <div class="scent-pill pill-energy">⚡ Nane · Enerji</div>
+    <div class="scent-pill pill-focus">🔵 Okaliptüs · Odak</div>
+    <div class="scent-pill pill-joy">🌸 Bergamot · Neşe</div>
+    <div class="scent-pill pill-balance">🍃 Sandal Ağacı · Denge</div>
+    <div class="scent-pill pill-sleep">🌙 Papatya · Uyku</div>
+    <div class="scent-pill pill-calm">🌲 Sedir · Güven</div>
+    <div class="scent-pill pill-energy">🍊 Portakal · Motivasyon</div>
+    <div class="scent-pill pill-focus">🫧 Kafur · Netlik</div>
+    <div class="scent-pill pill-joy">🌺 Ylang Ylang · Tutku</div>
+    <div class="scent-pill pill-balance">🌾 Vetiver · Topraklanma</div>
+    <div class="scent-pill pill-sleep">💜 Frankincense · Meditasyon</div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<div class="specs">
+  <div class="spec-item">
+    <div class="spec-num">12</div>
+    <div class="spec-label">Koku Bileşimi</div>
+    <div class="spec-desc">Ruh haline göre kişiselleştirilen aromaterapi formülleri</div>
+  </div>
+  <div class="spec-item">
+    <div class="spec-num">4s</div>
+    <div class="spec-label">Yanıt Süresi</div>
+    <div class="spec-desc">Sensörden kokuya geçen süre</div>
+  </div>
+  <div class="spec-item">
+    <div class="spec-num">7g</div>
+    <div class="spec-label">Ağırlık</div>
+    <div class="spec-desc">Unutacağın kadar hafif, seveceğin kadar şık</div>
+  </div>
+  <div class="spec-item">
+    <div class="spec-num">72h</div>
+    <div class="spec-label">Pil Ömrü</div>
+    <div class="spec-desc">Tek şarjla 3 güne kadar kesintisiz kullanım</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section" id="siparis">
+  <h2>Sınırlı Ön Sipariş Başladı.</h2>
+  <p>İlk 500 kullanıcıya özel lansman fiyatı ve koku kiti hediye.</p>
+  <a href="#" class="cta-btn">
+    Önce Sen Hisset →
+  </a>
+  <p class="price-note">Tahmini teslimat · Mayıs 2025 &nbsp;·&nbsp; Ücretsiz kargo &nbsp;·&nbsp; 30 gün iade garantisi</p>
+</section>
+
+<footer>
+  <div class="footer-logo">Aura</div>
+  <p>© 2025 Aura Technologies. Tüm hakları saklıdır.</p>
+  <p style="font-size:11px; color:rgba(245,240,234,0.3);">Gizlilik · Kullanım Şartları</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  function animRing() { rx += (mx-rx)*0.12; ry += (my-ry)*0.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animRing); }
+  animRing();
+
+  // Intersection observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), entry.target.dataset.delay || 0);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.step').forEach((el, i) => { el.dataset.delay = i * 150; observer.observe(el); });
+  document.querySelectorAll('.body-para').forEach((el, i) => { el.dataset.delay = i * 120; observer.observe(el); });
+</script>
+</body>
+</html>
