@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatura Analitik Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #0ea5e9;
+            --accent-alt: #f59e0b;
+            --accent-success: #10b981;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+            --bg-light: #1e293b;
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #0d1b2a 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+            animation: slideDown 0.6s ease-out;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        /* KPI Section */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .kpi-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.2s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.3s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        .kpi-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+        }
+        
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        
+        .kpi-icon.blue {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent);
+        }
+        
+        .kpi-icon.amber {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-alt);
+        }
+        
+        .kpi-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-success);
+        }
+        
+        .kpi-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .kpi-value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .kpi-unit {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.5s;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+        
+        /* Table Section */
+        .table-section {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.7s;
+            overflow-x: auto;
+        }
+        
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        
+        tbody tr:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+        
+        .value-positive {
+            color: var(--accent-success);
+            font-weight: 600;
+        }
+        
+        .value-currency {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.875rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            td, th {
+                padding: 8px;
+                font-size: 0.875rem;
+            }
+        }
+        
+        .stats-mini {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+        
+        .stat-item {
+            flex: 1;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Fatura Analitik Platformu</h1>
+            <p>Detaylı İş Zekası ve Raporlama Dashboard</p>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon blue">💰</div>
+                <div class="kpi-label">Toplam Fatura Tutarı</div>
+                <div class="kpi-value">₺249,855<span class="kpi-unit">.65</span></div>
+                <div class="stats-mini">
+                    <div class="stat-item">
+                        <span class="stat-label">Ort. Fatura</span>
+                        <span class="stat-value">₺2,082</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon amber">📈</div>
+                <div class="kpi-label">Toplam Tüketim</div>
+                <div class="kpi-value">32,296<span class="kpi-unit"> birim</span></div>
+                <div class="stats-mini">
+                    <div class="stat-item">
+                        <span class="stat-label">Fatura Sayısı</span>
+                        <span class="stat-value">120</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon green">📋</div>
+                <div class="kpi-label">Toplam Vergi Tutarı</div>
+                <div class="kpi-value">₺38,113<span class="kpi-unit">.52</span></div>
+                <div class="stats-mini">
+                    <div class="stat-item">
+                        <span class="stat-label">Vergi Oranı</span>
+                        <span class="stat-value">15.3%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon blue">🔧</div>
+                <div class="kpi-label">Toplam Sabit Ücret</div>
+                <div class="kpi-value">₺2,112<span class="kpi-unit">.00</span></div>
+                <div class="stats-mini">
+                    <div class="stat-item">
+                        <span class="stat-label">Ort./Fatura</span>
+                        <span class="stat-value">₺17.60</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <div class="chart-title">📍 İllere Göre Fatura Dağılımı</div>
+                <div class="chart-container">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-title">⚡ Fatura Tiplerine Göre Dağılım</div>
+                <div class="chart-container">
+                    <canvas id="typeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Customers Table -->
+        <div class="table-section">
+            <div class="table-title">🏆 En Fazla Tüketenler (Top 10)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>Müşteri Adı</th>
+                        <th>İl</th>
+                        <th>Tüketim (birim)</th>
+                        <th>Fatura Tutarı</th>
+                        <th>Birim Fiyat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Zeynep Arslan</td>
+                        <td>İzmir</td>
+                        <td class="value-positive">797</td>
+                        <td class="value-currency">₺7,346.28</td>
+                        <td>₺9.21</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Kadir Doğan</td>
+                        <td>Adana</td>
+                        <td class="value-positive">794</td>
+                        <td class="value-currency">₺6,512.99</td>
+                        <td>₺8.20</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Hasan Özdemir</td>
+                        <td>Bursa</td>
+                        <td class="value-positive">780</td>
+                        <td class="value-currency">₺5,607.12</td>
+                        <td>₺7.19</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Gülbahar Şimşek</td>
+                        <td>Bursa</td>
+                        <td class="value-positive">733</td>
+                        <td class="value-currency">₺5,919.74</td>
+                        <td>₺8.07</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Gülbahar Şimşek</td>
+                        <td>Antalya</td>
+                        <td class="value-positive">699</td>
+                        <td class="value-currency">₺6,537.33</td>
+                        <td>₺9.35</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Ahmet Yılmaz</td>
+                        <td>Gaziantep</td>
+                        <td class="value-positive">684</td>
+                        <td class="value-currency">₺4,484.80</td>
+                        <td>₺6.56</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Fatma Şahin</td>
+                        <td>Gaziantep</td>
+                        <td class="value-positive">675</td>
+                        <td class="value-currency">₺4,720.88</td>
+                        <td>₺6.99</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Zeynep Arslan</td>
+                        <td>İzmir</td>
+                        <td class="value-positive">652</td>
+                        <td class="value-currency">₺3,822.44</td>
+                        <td>₺5.86</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Kadir Doğan</td>
+                        <td>Gaziantep</td>
+                        <td class="value-positive">651</td>
+                        <td class="value-currency">₺4,354.35</td>
+                        <td>₺6.69</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>İbrahim Koçak</td>
+                        <td>Ankara</td>
+                        <td class="value-positive">642</td>
+                        <td class="value-currency">₺5,953.62</td>
+                        <td>₺9.27</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Chart Colors
+        const chartColors = {
+            primary: 'rgba(14, 165, 233, 1)',
+            primaryLight: 'rgba(14, 165, 233, 0.1)',
+            secondary: 'rgba(245, 158, 11, 1)',
+            secondaryLight: 'rgba(245, 158, 11, 0.1)',
+            accent: 'rgba(16, 185, 129, 1)',
+            border: 'rgba(51, 65, 85, 1)'
+        };
+        
+        // City Chart
+        const cityCtx = document.getElementById('cityChart').getContext('2d');
+        new Chart(cityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Bursa', 'Konya', 'Gaziantep', 'Ankara', 'Antalya', 'İzmir', 'Adana', 'İstanbul'],
+                datasets: [
+                    {
+                        label: 'Fatura Tutarı (₺)',
+                        data: [40703.21, 36464.93, 34419.73, 34304.30, 34291.59, 33759.12, 26536.76, 9376.01],
+                        backgroundColor: chartColors.primary,
+                        borderColor: chartColors.primary,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'rgba(203, 213, 225, 0.7)',
+                            callback: function(value) {
+                                return '₺' + (value/1000).toFixed(0) + 'k';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(51, 65, 85, 0.3)',
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgba(203, 213, 225, 0.7)'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Type Chart (Pie)
+        const typeCtx = document.getElementById('typeChart').getContext('2d');
+        new Chart(typeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Elektrik', 'Doğalgaz', 'Su'],
+                datasets: [
+                    {
+                        data: [152343.78, 63422.53, 34089.34],
+                        backgroundColor: [
+                            'rgba(14, 165, 233, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(16, 185, 129, 0.8)'
+                        ],
+                        borderColor: 'rgba(15, 23, 42, 1)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'rgba(203, 213, 225, 1)',
+                            padding: 20,
+                            font: {
+                                size: 13
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
